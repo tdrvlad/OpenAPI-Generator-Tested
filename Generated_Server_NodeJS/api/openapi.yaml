@@ -1,0 +1,2829 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: office@deepviss.org
+  description: DeepVISS (Deep Vision Interoperability Specification Standard) allows
+    several computer vision solutions to produce, consume and exchange events in the
+    same format.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://deepviss.org
+  title: DeepVISS TAG
+  version: 1.2.0
+externalDocs:
+  description: Find out more about DeepVISS
+  url: https://deepviss.org
+servers:
+- url: /
+tags:
+- description: Infroamation about the datasets
+  externalDocs:
+    description: Datasets API
+    url: https://deepviss.org
+  name: dataset
+paths:
+  /dataset/list:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetDatasetList
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/definitions/Dataset'
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list of datasets
+      tags:
+      - dataset
+      x-eov-operation-handler: controllers/DatasetController
+  /dataset/{datasetId}:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetDataset
+      parameters:
+      - description: The identifier of the dataset
+        explode: false
+        in: path
+        name: datasetId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Dataset'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve dataset info
+      tags:
+      - dataset
+      x-eov-operation-handler: controllers/DatasetController
+  /dataset:
+    delete:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: DeleteDataset
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                type: string
+              type: array
+          application/xml:
+            schema:
+              items:
+                type: string
+              type: array
+        description: The challenge object to be created
+        required: true
+      responses:
+        "204":
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Delete dataset
+      tags:
+      - dataset
+      x-eov-operation-handler: controllers/DatasetController
+    post:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: CreateDataset
+      parameters:
+      - explode: true
+        in: query
+        name: datasetName
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: datasetType
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: staticImage
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Dataset'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list of datasets
+      tags:
+      - dataset
+      x-eov-operation-handler: controllers/DatasetController
+  /dataset/media-item/{datasetId}:
+    post:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: AddMediaItem
+      parameters:
+      - explode: false
+        in: path
+        name: datasetId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: add media items to dataset
+      tags:
+      - dataset
+      x-eov-operation-handler: controllers/DatasetController
+  /dataset/static-image/list:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetDatasetStaticImages
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list of static images
+      tags:
+      - dataset
+      x-eov-operation-handler: controllers/DatasetController
+  /dataset/cost:
+    get:
+      description: optional parameter datasetId for new shards
+      operationId: getStorageCost
+      parameters:
+      - explode: true
+        in: query
+        name: datasetId
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: size
+        required: false
+        schema:
+          description: size of dataset in megabytes
+          example: 3.14
+          format: double
+          type: number
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/DatasetStorageCost'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: get estimated cost for storage
+      tags:
+      - dataset
+      x-eov-operation-handler: controllers/DatasetController
+  /challenge:
+    post:
+      operationId: CreateChallenge
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Challenge'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Challenge'
+        description: The challenge object to be created
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Challenge'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Create a new challenge.
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/broker/list:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetChallengeListBroker
+      parameters:
+      - explode: true
+        in: query
+        name: challengeName
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: accessType
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: liked
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/definitions/Challenge'
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list of challenges
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/supervisor/list:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetChallengeListSupervisor
+      parameters:
+      - explode: true
+        in: query
+        name: challengeName
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: accessType
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: liked
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/definitions/Challenge'
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list of challenges
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/collaborator/list:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetChallengeListCollaborator
+      parameters:
+      - explode: true
+        in: query
+        name: challengeName
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: accessType
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: liked
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/definitions/Challenge'
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list of challenges
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/{challengeId}:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetChallenge
+      parameters:
+      - description: The identifier of the dataset
+        explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: accessToken
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Challenge'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list of challenges
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+    patch:
+      operationId: PatchChallenge
+      parameters:
+      - description: The identifier of the dataset
+        explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchChallenge'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/PatchChallenge'
+        description: The new challenge object
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Challenge'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Update challenge.
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/{challengeId}/force-merge:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: ForceMergeTaggedMediaItem
+      parameters:
+      - description: The identifier of the dataset
+        explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The identifier of the tagged media item
+        explode: true
+        in: query
+        name: challengeName
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Challenge'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: force merge
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/{challengeId}/download/{shard}:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: DownloadChallenge
+      parameters:
+      - description: The identifier of the challenge
+        explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The identifier of the shard
+        explode: false
+        in: path
+        name: shard
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - explode: true
+        in: query
+        name: X-Auth-Credential
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Download tagged items from challenges
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/{challengeId}/archive/{shard}:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: ArchiveShard
+      parameters:
+      - description: The identifier of the challenge
+        explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The identifier of the shard
+        explode: false
+        in: path
+        name: shard
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - explode: true
+        in: query
+        name: force
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/ArchivedShard'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Archive shard from challenges
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/{challengeId}/archive/list:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: ArchivedShardList
+      parameters:
+      - description: The identifier of the challenge
+        explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/definitions/ArchivedShard'
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Get archive list from challenges
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/{challengeId}/tagged-item/list:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetTaggedItems
+      parameters:
+      - description: The identifier of the dataset
+        explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: stage
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: accessToken
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/definitions/TaggedMediaItem'
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list tagged media items
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/{challengeId}/star:
+    post:
+      operationId: StarChallenge
+      parameters:
+      - explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content: {}
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Star a public challenge.
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/{challengeId}/assign-tenant/{tenantId}:
+    post:
+      operationId: AssignTenantToChallenge
+      parameters:
+      - explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content: {}
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Star a public challenge.
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/{challengeId}/reject:
+    post:
+      operationId: RejectChallenge
+      parameters:
+      - explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        description: The challenge object to be created
+        required: true
+      responses:
+        "200":
+          content: {}
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Star a public challenge.
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/{challengeId}/statistics:
+    get:
+      operationId: StatisticsChallenge
+      parameters:
+      - explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeStatistics'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChallengeStatistics'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Get challenge statistics
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/cost:
+    post:
+      description: estimage challenge budget
+      operationId: getChallengeCost
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChallengeBudgetRequest'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/ChallengeBudgetRequest'
+        description: The challenge options
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeBudgetResponse'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: get estimated cost for challenge
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /challenge/assign:
+    post:
+      operationId: AssignChallenge
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignUsersRequest'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/AssignUsersRequest'
+        description: The users to be assigned to a challenge
+        required: true
+      responses:
+        "200":
+          content: {}
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Assign a private challenge.
+      tags:
+      - challenge
+      x-eov-operation-handler: controllers/ChallengeController
+  /task/{challengeId}:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetTask
+      parameters:
+      - description: The identifier of the challenge
+        explode: false
+        in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/GetTaskResponse'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Get new task
+      tags:
+      - task
+      x-eov-operation-handler: controllers/TaskController
+  /task/{taskId}/submit:
+    post:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: SubmitTask
+      parameters:
+      - description: The identifier of the challenge
+        explode: false
+        in: path
+        name: taskId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/Task'
+          application/xml:
+            schema:
+              $ref: '#/definitions/Task'
+        description: task object
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Task'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Submit  task
+      tags:
+      - task
+      x-eov-operation-handler: controllers/TaskController
+  /dispatch-policy/list:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetDispatchPolicyList
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/definitions/DispatchPolicy'
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list of dispatch policies
+      tags:
+      - dispatchPolicy
+      x-eov-operation-handler: controllers/DispatchPolicyController
+  /dispatch-policy:
+    post:
+      operationId: CreateDispatchPolicy
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispatchPolicy'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/DispatchPolicy'
+        description: The dispatchPolicy object to be created
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/DispatchPolicy'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Create a new dispatchPolicy.
+      tags:
+      - dispatchPolicy
+      x-eov-operation-handler: controllers/DispatchPolicyController
+  /evaluation-policy/list:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetEvaluationPolicyList
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/definitions/EvaluationPolicy'
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list of evaluation policies
+      tags:
+      - evaluationPolicy
+      x-eov-operation-handler: controllers/EvaluationPolicyController
+  /evaluation-policy:
+    post:
+      operationId: CreateEvaluationPolicy
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluationPolicy'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/EvaluationPolicy'
+        description: The evaluationPolicy object to be created
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/EvaluationPolicy'
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Create a new evaluationPolicy.
+      tags:
+      - evaluationPolicy
+      x-eov-operation-handler: controllers/EvaluationPolicyController
+  /media-item:
+    delete:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: DeleteMediaItems
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                type: string
+              type: array
+          application/xml:
+            schema:
+              items:
+                type: string
+              type: array
+        description: The challenge object to be created
+        required: true
+      responses:
+        "204":
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Delete mediaItem
+      tags:
+      - mediaItem
+      x-eov-operation-handler: controllers/MediaItemController
+  /media-item/{bucketName}/{mediaItem}:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetMediaItem
+      parameters:
+      - description: bucket name
+        explode: false
+        in: path
+        name: bucketName
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: media item
+        explode: false
+        in: path
+        name: mediaItem
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            image/png:
+              schema:
+                format: byte
+                type: string
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve media item
+      tags:
+      - mediaItem
+      x-eov-operation-handler: controllers/MediaItemController
+  /media-item/{datasetId}/list:
+    get:
+      description: Multiple status values can be provided with comma separated strings
+      operationId: GetMediaItemList
+      parameters:
+      - explode: false
+        in: path
+        name: datasetId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/definitions/MediaItem'
+                type: array
+          description: successful operation
+        "400":
+          description: Invalid status value
+      summary: Retrieve list of mediaItems
+      tags:
+      - mediaItem
+      x-eov-operation-handler: controllers/MediaItemController
+components:
+  schemas:
+    Avatar:
+      properties:
+        avatarId:
+          description: '[TBD] Alpha-numeric, unique id of avatar'
+          example: UTWKE80768EF05389899TDD196397EDFDDFBC81751818B7FD13001IU455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        lifeForm:
+          $ref: '#/components/schemas/LifeFormEnum'
+        assignedChallenges:
+          description: assignedChallenges
+          items:
+            $ref: '#/components/schemas/Challenge'
+          type: array
+      type: object
+    LifeFormEnum:
+      enum:
+      - silicon
+      - carbon
+      type: string
+    Dataset:
+      example:
+        image:
+          imageBase64: imageBase64
+          imageURL: imageURL
+          imageContentType: imageContentType
+        lastUpdateTimestamp: 2000-01-23T04:56:07.000+00:00
+        creationTimestamp: 2000-01-23T04:56:07.000+00:00
+        name: Dogs
+        datasetId: XAFKE80768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        storageCost: 3.14
+        owningAccountId: UWRBFUWRW18B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0EUWEBFWUBEFWUE
+      properties:
+        datasetId:
+          description: '[TBD] Alpha-numeric, unique id of dataset'
+          example: XAFKE80768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        type:
+          $ref: '#/components/schemas/DatasetTypeEnum'
+        creationTimestamp:
+          description: Date and time expressed according to ISO 8601 (e.g. 2018-06-24T23:10:28+03:00)
+          format: date-time
+          type: string
+        lastUpdateTimestamp:
+          description: Date and time expressed according to ISO 8601 (e.g. 2018-06-24T23:10:28+03:00)
+          format: date-time
+          type: string
+        owningAccountId:
+          description: '[TBD] Alpha-numeric, unique id of dataset'
+          example: UWRBFUWRW18B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0EUWEBFWUBEFWUE
+          type: string
+        name:
+          description: '[TBD] Alpha-numeric, name of dataset'
+          example: Dogs
+          type: string
+        image:
+          $ref: '#/components/schemas/Image'
+        storageCost:
+          description: cost for storage in dollars per month
+          example: 3.14
+          format: double
+          type: number
+      type: object
+    DatasetStorageCost:
+      example:
+        datasetId: XAFKE80768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        estimatedShardCost: 3.14
+        totalCost: 3.14
+      properties:
+        datasetId:
+          description: '[TBD] Alpha-numeric, unique id of dataset'
+          example: XAFKE80768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        type:
+          $ref: '#/components/schemas/DatasetTypeEnum'
+        estimatedShardCost:
+          description: cost for storage in dollars per month
+          example: 3.14
+          format: double
+          type: number
+        totalCost:
+          description: cost for storage in dollars per month
+          example: 3.14
+          format: double
+          type: number
+      type: object
+    Challenge:
+      example:
+        completionPercentageForCollaborator: 70
+        dispatchPolicyId: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        supplierTenantId: Dogs
+        edgeTaxonomy: is a, has a
+        initialNumberOfShards: 4
+        demanderTenantId: Dogs
+        description: Tag the cats
+        resolution: Tag the cats
+        nodeTaxonomy: consumer,overdue
+        completionPercentages:
+        - stages:
+          - percentage: 100
+            stageNumber: 1
+          - percentage: 100
+            stageNumber: 1
+          shard: 1
+        - stages:
+          - percentage: 100
+            stageNumber: 1
+          - percentage: 100
+            stageNumber: 1
+          shard: 1
+        creationTimestamp: 2000-01-23T04:56:07.000+00:00
+        datasetId: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        budget: 3.14
+        challengeAccessToken: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        datasetMetadata:
+          mediaItems: 1000
+          numberOfShards: 4
+          name: Dogs
+        completionPercentage: 70
+        challengeId: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        name: Dogs
+        expiration: 4
+        evaluationPolicyId: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        stared: true
+        estimatedTagsPerMediaItem: 4
+      properties:
+        challengeId:
+          description: 'Alpha-numeric, unique id of challenge. '
+          example: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        datasetId:
+          description: Alpha-numeric, unique id of dataset
+          example: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        evaluationPolicyId:
+          description: Alpha-numeric, unique id of evaluation policy
+          example: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        dispatchPolicyId:
+          description: Alpha-numeric, unique id of dispatch policy
+          example: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        creationTimestamp:
+          description: Date and time expressed according to ISO 8601 (e.g. 2018-06-24T23:10:28+03:00)
+          format: date-time
+          type: string
+        status:
+          $ref: '#/components/schemas/ChallengeStatusEnum'
+        accessType:
+          $ref: '#/components/schemas/ChallengeAccessTypeEnum'
+        tenantRole:
+          $ref: '#/components/schemas/ChallengeTenantRoleEnum'
+        name:
+          description: '[TBD] Alpha-numeric, name of dataset'
+          example: Dogs
+          type: string
+        completionPercentage:
+          description: completion percentage of a challenge
+          example: 70
+          type: integer
+        completionPercentageForCollaborator:
+          description: completion percentage of a challenge for a collaborator
+          example: 70
+          type: integer
+        description:
+          description: '[TBD] Alpha-numeric, name of dataset'
+          example: Tag the cats
+          type: string
+        budget:
+          description: budget allocated for challenge
+          example: 3.14
+          format: double
+          type: number
+        stared:
+          description: '[TBD] Alpha-numeric, name of dataset'
+          example: true
+          type: boolean
+        supplierTenantId:
+          description: '[TBD] Alpha-numeric, name of supplierTenantId'
+          example: Dogs
+          type: string
+        resolution:
+          description: '[TBD] Alpha-numeric, name of dataset'
+          example: Tag the cats
+          type: string
+        demanderTenantId:
+          description: '[TBD] Alpha-numeric, name of demanderTenantId'
+          example: Dogs
+          type: string
+        initialNumberOfShards:
+          description: shards in dataset
+          example: 4
+          type: integer
+        datasetMetadata:
+          $ref: '#/components/schemas/Challenge_datasetMetadata'
+        tagType:
+          $ref: '#/components/schemas/ShapeTypeEnum'
+        estimatedTagsPerMediaItem:
+          description: estimated Tags Per Media Item
+          example: 4
+          format: double
+          type: number
+        nodeTaxonomy:
+          description: taxonomy list for nodeType
+          example: consumer,overdue
+          items:
+            type: string
+          type: array
+        edgeTaxonomy:
+          description: taxonomy list for edgeType
+          example: is a, has a
+          items:
+            type: string
+          type: array
+        completionPercentages:
+          items:
+            $ref: '#/components/schemas/ChallengeCompletionPercentage'
+          type: array
+        expiration:
+          description: hours until the challenge is expired
+          example: 4
+          type: integer
+        challengeAccessToken:
+          description: Token for accessing the challenge
+          example: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+      required:
+      - accessType
+      type: object
+    PatchChallenge:
+      example:
+        dispatchPolicyId: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        name: Dogs
+        description: Tag the cats
+        evaluationPolicyId: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        budget: 3.14
+      properties:
+        evaluationPolicyId:
+          description: Alpha-numeric, unique id of evaluation policy
+          example: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        dispatchPolicyId:
+          description: Alpha-numeric, unique id of dispatch policy
+          example: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        accessType:
+          $ref: '#/components/schemas/ChallengeAccessTypeEnum'
+        name:
+          description: '[TBD] Alpha-numeric, name of dataset'
+          example: Dogs
+          type: string
+        description:
+          description: '[TBD] Alpha-numeric, name of dataset'
+          example: Tag the cats
+          type: string
+        budget:
+          description: budget allocated for challenge
+          example: 3.14
+          format: double
+          type: number
+      type: object
+    ChallengeAccessTypeEnum:
+      enum:
+      - public
+      - private
+      - spot
+      - confidential
+      type: string
+    ChallengeStatusEnum:
+      enum:
+      - pending
+      - inProgress
+      - completed
+      - rejected
+      type: string
+    ChallengeTenantRoleEnum:
+      enum:
+      - SUPPLIER
+      - BROKER
+      - DEMANDER
+      type: string
+    ChallengeBudgetRequest:
+      example:
+        dispatchPolicyId: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        datasetId: XAFKE80768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        evaluationPolicyId: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        estimatedTagsPerMediaItem: 4
+      properties:
+        datasetId:
+          description: '[TBD] Alpha-numeric, unique id of dataset'
+          example: XAFKE80768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        evaluationPolicyId:
+          description: Alpha-numeric, unique id of evaluation policy
+          example: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        dispatchPolicyId:
+          description: Alpha-numeric, unique id of dispatch policy
+          example: DFK768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        tagType:
+          $ref: '#/components/schemas/ShapeTypeEnum'
+        estimatedTagsPerMediaItem:
+          description: estimated Tags Per Media Item
+          example: 4
+          format: double
+          type: number
+      type: object
+    ChallengeBudgetResponse:
+      example:
+        estimatedBudget: 3.14
+      properties:
+        estimatedBudget:
+          description: estimated budget for challenge
+          example: 3.14
+          format: double
+          type: number
+      type: object
+    ChallengeStage:
+      example:
+        percentage: 100
+        stageNumber: 1
+      properties:
+        stageNumber:
+          description: stage number
+          example: 1
+          format: int32
+          type: integer
+        percentage:
+          description: completion percentage for this stage
+          example: 100
+          format: int32
+          type: integer
+        operator:
+          $ref: '#/components/schemas/LifeFormEnum'
+      type: object
+    ChallengeCompletionPercentage:
+      example:
+        stages:
+        - percentage: 100
+          stageNumber: 1
+        - percentage: 100
+          stageNumber: 1
+        shard: 1
+      properties:
+        shard:
+          description: shard number
+          example: 1
+          format: int32
+          type: integer
+        stages:
+          items:
+            $ref: '#/components/schemas/ChallengeStage'
+          type: array
+      type: object
+    MediaDescriptor:
+      example:
+        pHash: pre
+        size: 1345789
+        hash: FGX8993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+      properties:
+        size:
+          description: Size of files when represented in binary, without additional
+            encoding. Used for de-duplication.
+          example: 1345789
+          format: int32
+          type: integer
+        hash:
+          description: Cryptographic hash of original file. Used for de-duplication.
+          example: FGX8993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        pHash:
+          description: Perceptual representation of the content of the media. Used
+            for de-duplication.
+          example: pre
+          type: string
+      type: object
+    MediaItem:
+      example:
+        image:
+          imageBase64: imageBase64
+          imageURL: imageURL
+          imageContentType: imageContentType
+        mediaItemId: UERE80768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        format: image/heif
+        descriptor:
+          pHash: pre
+          size: 1345789
+          hash: FGX8993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        type: rgb-static-photo
+        sharding:
+          block: 0
+          shard: 6
+      properties:
+        mediaItemId:
+          description: '[TBD] Alpha-numeric, unique id of media item'
+          example: UERE80768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        type:
+          enum:
+          - rgb-static-photo
+          - rgb-live-photo
+          - rgb-video
+          - audio-rgb-video
+          - audio-only
+          - text
+          type: string
+        format:
+          enum:
+          - image/heif
+          - image/heic
+          - image/heif-sequence
+          - image/jpeg
+          - image/png
+          - video/mp4
+          - video/3gpp
+          - video/quicktime
+          - video/x-msvideo
+          - video/x-ms-wmv
+          type: string
+        descriptor:
+          $ref: '#/definitions/MediaDescriptor'
+        sharding:
+          $ref: '#/definitions/ShardingDescriptor'
+        image:
+          $ref: '#/components/schemas/Image'
+      type: object
+    ChallengeStatistics:
+      example:
+        averageRate: 3.14
+        completionTimePassed: 32312342
+        averageValidationRate: 3.14
+        completionTimeReal: 3234234
+        paymentPerHour: 3.14
+        averageCompletionTime: 3
+        usersWorkTime:
+        - data:
+          - - 0
+            - 0
+          - - 0
+            - 0
+          name: name
+        - data:
+          - - 0
+            - 0
+          - - 0
+            - 0
+          name: name
+      properties:
+        averageRate:
+          description: average payment per challenge
+          example: 3.14
+          format: double
+          type: number
+        averageCompletionTime:
+          description: Average time to complete a task for a challenge
+          example: 3
+          format: double
+          type: number
+        averageValidationRate:
+          description: Average valdation per challenge
+          example: 3.14
+          format: double
+          type: number
+        paymentPerHour:
+          description: Estimated payment per hour
+          example: 3.14
+          format: double
+          type: number
+        completionTimePassed:
+          description: completion time for all the task passed miliseconds
+          example: 32312342
+          format: int64
+          type: integer
+        completionTimeReal:
+          description: completion time for all the tasks miliseconds
+          example: 3234234
+          format: int64
+          type: integer
+        usersWorkTime:
+          description: graphs
+          items:
+            $ref: '#/components/schemas/ChallengeStatistics_usersWorkTime'
+          type: array
+      type: object
+    ShardingDescriptor:
+      description: The confidence of a merged tag (from several tags) or the overall.
+      example:
+        block: 0
+        shard: 6
+      properties:
+        block:
+          description: TBD
+          format: int32
+          type: integer
+        shard:
+          description: TBD
+          format: int32
+          type: integer
+      type: object
+    Evaluation:
+      description: The confidence of a merged tag (from several tags) or the overall.
+      example:
+        confidence: 1.4658129805029452
+        subjectiveOpinion:
+          baseRateProbability: 0.001
+          opinionEmitterId: ocr
+          uncertainty: 0.1
+          belief: 0.75
+          opinionReasonId: unreadable
+          disbelief: 0.2
+      properties:
+        confidence:
+          description: The confidence of the merged tag (from several tags), based
+            on IoU (Intersection over Union) of the composing tags. The confidence
+            is the reduce form of the SubjectiveOpinion, representing only its belief
+            part.
+          format: double
+          type: number
+        subjectiveOpinion:
+          $ref: '#/components/schemas/SubjectiveOpinion'
+      type: object
+    Task:
+      example:
+        image:
+          imageBase64: imageBase64
+          imageURL: imageURL
+          imageContentType: imageContentType
+        edges:
+        - destinationTagID: 7300124455B07E91CB289F87791D78064ECC93754F19B13D419489F1
+          destinationTextBoxId: "1"
+          elasticity: 5.962133916683182
+          edgeType: has-greater-area
+          slack: 0.0
+          sourceTagId: 87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          sourceTextBoxId: "1"
+          internalSubjectiveOpinion:
+            baseRateNumerator: 1
+            commonDenominator: 1
+            unattributedUncertaintyNumerator: 1
+            opinionEmitterId: ocr
+            attributedBeliefNumerator: 5
+            opinionReasonId: unreadable
+            attributedDisbeliefNumerator: 2
+        - destinationTagID: 7300124455B07E91CB289F87791D78064ECC93754F19B13D419489F1
+          destinationTextBoxId: "1"
+          elasticity: 5.962133916683182
+          edgeType: has-greater-area
+          slack: 0.0
+          sourceTagId: 87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          sourceTextBoxId: "1"
+          internalSubjectiveOpinion:
+            baseRateNumerator: 1
+            commonDenominator: 1
+            unattributedUncertaintyNumerator: 1
+            opinionEmitterId: ocr
+            attributedBeliefNumerator: 5
+            opinionReasonId: unreadable
+            attributedDisbeliefNumerator: 2
+        challengeDescription: Tag the cats
+        generationTimestamp: 2000-01-23T04:56:07.000+00:00
+        resolution:
+          description: Reported for ...
+        submissionTimestamp: 2000-01-23T04:56:07.000+00:00
+        tags:
+        - tagId: B07E91CB289F87791D78064ECC93754F19B13D419489F162
+          geometry:
+          - shapeType: Shape2DReactangle
+            shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          - shapeType: Shape2DReactangle
+            shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          nodeType: vehicle
+          taskId: 1CB289F87791D78064ECC93754F19B13D419489F162A
+          internalSubjectiveOpinion:
+            baseRateNumerator: 1
+            commonDenominator: 1
+            unattributedUncertaintyNumerator: 1
+            opinionEmitterId: ocr
+            attributedBeliefNumerator: 5
+            opinionReasonId: unreadable
+            attributedDisbeliefNumerator: 2
+          submissionTimestamp: 2000-01-23T04:56:07.000+00:00
+        - tagId: B07E91CB289F87791D78064ECC93754F19B13D419489F162
+          geometry:
+          - shapeType: Shape2DReactangle
+            shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          - shapeType: Shape2DReactangle
+            shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          nodeType: vehicle
+          taskId: 1CB289F87791D78064ECC93754F19B13D419489F162A
+          internalSubjectiveOpinion:
+            baseRateNumerator: 1
+            commonDenominator: 1
+            unattributedUncertaintyNumerator: 1
+            opinionEmitterId: ocr
+            attributedBeliefNumerator: 5
+            opinionReasonId: unreadable
+            attributedDisbeliefNumerator: 2
+          submissionTimestamp: 2000-01-23T04:56:07.000+00:00
+        challengeId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        avatarId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        attemptSequenceNumber: 2
+        challengeName: Tag Cats
+        evaluationStatus: unallocated
+        taskId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+      properties:
+        taskId:
+          description: Alpha-numeric, unique id of user who has performed the task
+          example: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        avatarId:
+          description: Alpha-numeric, unique id of user who has performed the task.
+          example: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        challengeId:
+          description: 'Alpa-numeric, unique id of challenge. '
+          example: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        attemptSequenceNumber:
+          description: Identifies the number of evaluation attempts performed on this
+            specific media item.
+          example: 2
+          format: int32
+          type: integer
+        generationTimestamp:
+          description: Date and time expressed according to ISO 8601 (e.g. 2018-06-24T23:10:28+03:00)
+            when the task was requested by the user
+          format: date-time
+          type: string
+        submissionTimestamp:
+          description: Date and time expressed according to ISO 8601 (e.g. 2018-06-24T23:10:28+03:00)
+            when the task was submitted by the user
+          format: date-time
+          type: string
+        image:
+          $ref: '#/components/schemas/Image'
+        evaluationStatus:
+          enum:
+          - unallocated
+          - leased
+          - not-evaluated
+          - passed
+          - failed
+          - skipped
+          - timed-out
+          - permamnently-failed
+          type: string
+        challengeName:
+          description: Name of Challenge
+          example: Tag Cats
+          type: string
+        challengeDescription:
+          description: '[TBD] Alpha-numeric, name of dataset'
+          example: Tag the cats
+          type: string
+        tags:
+          items:
+            $ref: '#/components/schemas/Tag'
+          type: array
+        edges:
+          items:
+            $ref: '#/components/schemas/Edge'
+          type: array
+        resolution:
+          $ref: '#/components/schemas/TaskResolution'
+      type: object
+    Tag:
+      example:
+        tagId: B07E91CB289F87791D78064ECC93754F19B13D419489F162
+        geometry:
+        - shapeType: Shape2DReactangle
+          shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        - shapeType: Shape2DReactangle
+          shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        nodeType: vehicle
+        taskId: 1CB289F87791D78064ECC93754F19B13D419489F162A
+        internalSubjectiveOpinion:
+          baseRateNumerator: 1
+          commonDenominator: 1
+          unattributedUncertaintyNumerator: 1
+          opinionEmitterId: ocr
+          attributedBeliefNumerator: 5
+          opinionReasonId: unreadable
+          attributedDisbeliefNumerator: 2
+        submissionTimestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        tagId:
+          description: Alpha-numeric, unique id of tagged object
+          example: B07E91CB289F87791D78064ECC93754F19B13D419489F162
+          type: string
+        submissionTimestamp:
+          description: Date and time expressed according to ISO 8601 (e.g. 2018-06-24T23:10:28+03:00)
+          format: date-time
+          type: string
+        nodeType:
+          description: What does the object that has been detected represent. Can
+            be extended to discrete histogram of types.
+          example: vehicle
+          type: string
+        geometry:
+          description: What are the shapes that compose the tag?
+          items:
+            $ref: '#/components/schemas/Shape'
+          type: array
+        taskId:
+          description: Alpha-numeric, unique id of task object
+          example: 1CB289F87791D78064ECC93754F19B13D419489F162A
+          type: string
+        internalSubjectiveOpinion:
+          $ref: '#/components/schemas/InternalSubjectiveOpinion'
+      type: object
+    MergedTag:
+      example:
+        evaluation:
+          confidence: 1.4658129805029452
+          subjectiveOpinion:
+            baseRateProbability: 0.001
+            opinionEmitterId: ocr
+            uncertainty: 0.1
+            belief: 0.75
+            opinionReasonId: unreadable
+            disbelief: 0.2
+        mediaItemId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        challengeId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        composingTags:
+        - composingTags
+        - composingTags
+        mergedTagId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        geometry:
+        - shapeType: Shape2DReactangle
+          shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        - shapeType: Shape2DReactangle
+          shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        permanentIdentifier:
+          hashCode: hashCode
+          segments:
+          - index: 0
+            weight: 6.027456183070403
+            assignmentFunction: hashed-from-data
+            encoding: json-array
+            value: value
+          - index: 0
+            weight: 6.027456183070403
+            assignmentFunction: hashed-from-data
+            encoding: json-array
+            value: value
+        nodeType: vehicle
+        evaluationStatus: passed
+      properties:
+        mergedTagId:
+          description: Alpha-numeric, unique id of tagged object
+          example: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        mediaItemId:
+          description: Alpha-numeric, unique id of tagged object
+          example: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        challengeId:
+          description: Alpha-numeric, unique id of tagged object
+          example: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        permanentIdentifier:
+          $ref: '#/definitions/PermanentIdentifier'
+        nodeType:
+          description: What type of object/event has been detected?
+          example: vehicle
+          type: string
+        geometry:
+          description: What are the shapes that have been merged to determine this
+            tag?
+          items:
+            $ref: '#/components/schemas/Shape'
+          type: array
+        evaluation:
+          $ref: '#/definitions/Evaluation'
+        composingTags:
+          description: What are the tags which have been merged?
+          items:
+            type: string
+          type: array
+        evaluationStatus:
+          enum:
+          - passed
+          - failed
+          - incomplete
+          type: string
+      type: object
+    PermanentIdentifier:
+      description: The object with describes the composite identifier
+      example:
+        hashCode: hashCode
+        segments:
+        - index: 0
+          weight: 6.027456183070403
+          assignmentFunction: hashed-from-data
+          encoding: json-array
+          value: value
+        - index: 0
+          weight: 6.027456183070403
+          assignmentFunction: hashed-from-data
+          encoding: json-array
+          value: value
+      properties:
+        hashCode:
+          description: The hashcode obtained by running a SHA-512 on the binary values
+            of the segments, in the ascending order of indexes
+          type: string
+        segments:
+          description: The segments (sub-keys) that compose the permanent identifier.
+          items:
+            $ref: '#/components/schemas/PermanentIdentifierSegment'
+          type: array
+      type: object
+    TaggedMediaItem:
+      example:
+        image:
+          imageBase64: imageBase64
+          imageURL: imageURL
+          imageContentType: imageContentType
+        mediaItemId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        challengeId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        taggedMediaItemId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        composingTasks:
+        - composingTasks
+        - composingTasks
+        mergedTags:
+        - evaluation:
+            confidence: 1.4658129805029452
+            subjectiveOpinion:
+              baseRateProbability: 0.001
+              opinionEmitterId: ocr
+              uncertainty: 0.1
+              belief: 0.75
+              opinionReasonId: unreadable
+              disbelief: 0.2
+          mediaItemId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          challengeId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          composingTags:
+          - composingTags
+          - composingTags
+          mergedTagId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          geometry:
+          - shapeType: Shape2DReactangle
+            shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          - shapeType: Shape2DReactangle
+            shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          permanentIdentifier:
+            hashCode: hashCode
+            segments:
+            - index: 0
+              weight: 6.027456183070403
+              assignmentFunction: hashed-from-data
+              encoding: json-array
+              value: value
+            - index: 0
+              weight: 6.027456183070403
+              assignmentFunction: hashed-from-data
+              encoding: json-array
+              value: value
+          nodeType: vehicle
+          evaluationStatus: passed
+        - evaluation:
+            confidence: 1.4658129805029452
+            subjectiveOpinion:
+              baseRateProbability: 0.001
+              opinionEmitterId: ocr
+              uncertainty: 0.1
+              belief: 0.75
+              opinionReasonId: unreadable
+              disbelief: 0.2
+          mediaItemId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          challengeId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          composingTags:
+          - composingTags
+          - composingTags
+          mergedTagId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          geometry:
+          - shapeType: Shape2DReactangle
+            shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          - shapeType: Shape2DReactangle
+            shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          permanentIdentifier:
+            hashCode: hashCode
+            segments:
+            - index: 0
+              weight: 6.027456183070403
+              assignmentFunction: hashed-from-data
+              encoding: json-array
+              value: value
+            - index: 0
+              weight: 6.027456183070403
+              assignmentFunction: hashed-from-data
+              encoding: json-array
+              value: value
+          nodeType: vehicle
+          evaluationStatus: passed
+        mergedEdges:
+        - destinationTagID: 7300124455B07E91CB289F87791D78064ECC93754F19B13D419489F1
+          destinationTextBoxId: "1"
+          elasticity: 5.962133916683182
+          edgeType: has-greater-area
+          slack: 0.0
+          sourceTagId: 87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          sourceTextBoxId: "1"
+          internalSubjectiveOpinion:
+            baseRateNumerator: 1
+            commonDenominator: 1
+            unattributedUncertaintyNumerator: 1
+            opinionEmitterId: ocr
+            attributedBeliefNumerator: 5
+            opinionReasonId: unreadable
+            attributedDisbeliefNumerator: 2
+        - destinationTagID: 7300124455B07E91CB289F87791D78064ECC93754F19B13D419489F1
+          destinationTextBoxId: "1"
+          elasticity: 5.962133916683182
+          edgeType: has-greater-area
+          slack: 0.0
+          sourceTagId: 87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          sourceTextBoxId: "1"
+          internalSubjectiveOpinion:
+            baseRateNumerator: 1
+            commonDenominator: 1
+            unattributedUncertaintyNumerator: 1
+            opinionEmitterId: ocr
+            attributedBeliefNumerator: 5
+            opinionReasonId: unreadable
+            attributedDisbeliefNumerator: 2
+      properties:
+        taggedMediaItemId:
+          description: Alpha-numeric, unique id of tagged object
+          example: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        mediaItemId:
+          description: Alpha-numeric, unique id of tagged object
+          example: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        challengeId:
+          description: Alpha-numeric, unique id of tagged object
+          example: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        composingTasks:
+          description: What are the tasks contributed in the determination of these
+            tags?
+          items:
+            type: string
+          type: array
+        mergedTags:
+          items:
+            $ref: '#/definitions/MergedTag'
+          type: array
+        image:
+          $ref: '#/components/schemas/Image'
+        mergedEdges:
+          items:
+            $ref: '#/components/schemas/Edge'
+          type: array
+      type: object
+    EvaluationPolicy:
+      description: The parameters used in the evaluation of a challenge, its tasks
+        and their Tags.
+      example:
+        rankOfMean: 1.0
+        name: Lightwight
+        harshness: 0.5
+        evaluationPolicyId: evaluationPolicyId
+        summationType: algebraic
+        spatialOverlapThreshold: 0.5
+      properties:
+        evaluationPolicyId:
+          description: Unique ID of evaluation policy
+          type: string
+        name:
+          description: name
+          example: Lightwight
+          type: string
+        spatialOverlapThreshold:
+          description: The minimum amount of overlap between two tags, which, in conjuction
+            with a matching object-type, is a condition for merging two tags
+          example: 0.5
+          format: double
+          type: number
+        harshness:
+          description: The penalty incurred for a tag that is NOT matched with other
+            tags
+          example: 0.5
+          format: double
+          type: number
+        rankOfMean:
+          description: 'The rank (power) of the generalized mean used for evaluating
+            a task composed of several tags. Negative values mean harsher evaluations,
+            values larger than 1.0 mean less harsh evaluations. Default value is 1.0
+            (arithmetic mean). '
+          example: 1.0
+          format: double
+          type: number
+        summationType:
+          description: If set to 'algebraic', negative results on one task will be
+            substracted from user payout.
+          enum:
+          - algebraic
+          - non-negative
+          type: string
+      type: object
+    DispatchPolicy:
+      description: The parameters used in the disaptch of a task
+      example:
+        dispatchPolicyId: dispatchPolicyId
+        mediaItemLockTimeout: 10
+        numberOfUsers: 3
+        name: Fast
+      properties:
+        dispatchPolicyId:
+          description: Unique ID of dispatch policy
+          type: string
+        name:
+          description: name
+          example: Fast
+          type: string
+        numberOfUsers:
+          description: Number of users that are assigned the same task
+          example: 3
+          type: integer
+        mediaItemLockTimeout:
+          description: Time to wait before assign the same mediaItem to other user
+          example: 10
+          type: integer
+      type: object
+    DatasetTypeEnum:
+      enum:
+      - rgb-static-photo
+      - rgb-live-photo
+      - rgb-video
+      - audio-rgb-video
+      - audio-only
+      - text
+      type: string
+    TaskResolution:
+      description: Information about a task
+      example:
+        description: Reported for ...
+      properties:
+        description:
+          description: description
+          example: Reported for ...
+          type: string
+      type: object
+    Point2D:
+      properties:
+        x:
+          description: X-coordinate as integer number of pixels measured from the
+            left to the right.
+          format: int32
+          type: integer
+        y:
+          description: Y-coordinate as integer number of pixels measured from the
+            top to the bottom.
+          format: int32
+          type: integer
+      required:
+      - x
+      - "y"
+      type: object
+    Point3D:
+      properties:
+        x:
+          description: X-coordinate as integer number of pixels measured from the
+            left to the right.
+          format: int32
+          type: integer
+        y:
+          description: Y-coordinate as integer number of pixels measured from the
+            top to the bottom.
+          format: int32
+          type: integer
+        z:
+          description: Z-coordinate as integer number of pixels measured from the
+            top to the bottom.
+          format: int32
+          type: integer
+      required:
+      - x
+      - "y"
+      - z
+      type: object
+    Shape2DRectangle:
+      allOf:
+      - $ref: '#/components/schemas/Shape'
+      - $ref: '#/components/schemas/Shape2DRectangle_allOf'
+    Shape2DPolygon:
+      allOf:
+      - $ref: '#/components/schemas/Shape'
+      - $ref: '#/components/schemas/Shape2DPolygon_allOf'
+    Shape2DTimeboundPolygon:
+      allOf:
+      - $ref: '#/components/schemas/Shape'
+      - $ref: '#/components/schemas/Shape2DTimeboundPolygon_allOf'
+    Shape2DRectangleTextBlock:
+      allOf:
+      - $ref: '#/components/schemas/Shape2DRectangle'
+      - $ref: '#/components/schemas/Shape2DRectangleTextBlock_allOf'
+    Shape2DPolygonTextBlock:
+      allOf:
+      - $ref: '#/components/schemas/Shape2DPolygon'
+      - $ref: '#/components/schemas/Shape2DRectangleTextBlock_allOf'
+    Style:
+      description: Recognized style of the writing, including font family, font type,
+        size, color
+      properties:
+        font-style:
+          description: Character encoding type
+          enum:
+          - serif
+          - sans-serif
+          - handwritten
+          - collage
+          example: serif
+          type: string
+        font-variant:
+          description: Character encoding type
+          enum:
+          - all-caps
+          - no-caps
+          - handwritten
+          - collage
+          example: serif
+          type: string
+        font-size:
+          description: Size of font
+          example: 12
+          format: int16
+          type: integer
+        font-color:
+          description: 'Color in hex format '
+          example: '#030F01'
+          type: string
+      type: object
+    Transliteration:
+      description: 'Defines a segment of text associated to a Shape, together with
+        many possibilities for each '
+      properties:
+        languageCode:
+          description: The BCP-47 language code
+          example: en
+          type: string
+        compressedCharacterSequence:
+          description: compressed version of character sequence
+          example: word
+          type: string
+        encoding:
+          description: Character encoding type
+          enum:
+          - ISO-646-ASCII
+          - UTF-8
+          example: UTF-8
+          type: string
+        charset:
+          description: The set of characters allowed , alphabet
+          enum:
+          - latin1
+          - latin2
+          - cp1251
+          - greek
+          - hebrew
+          example: latin1
+          type: string
+        direction:
+          description: reading direction
+          enum:
+          - left-to-right
+          - right-to-left
+          - top-to-bottom
+          - bottom-to-top
+          example: left-to-right
+          type: string
+        collation-language:
+          description: collation use for comparing and sorting the characters, as
+            per Unicode Sorting Algorithm
+          enum:
+          - utf8_romanian_ci
+          - latin2_general_ci
+          - cp1250_general_ci
+          - greek_general_ci
+          - hebrew_general_ci
+          example: utf8_romanian_ci
+          type: string
+        characterSequence:
+          description: The order of the characters, according to the direction of
+            the transliteration
+          items:
+            $ref: '#/components/schemas/ObservableSymbol'
+          type: array
+      type: object
+    SubjectiveOpinion:
+      description: 'The reduced or collapsed version of InternalSubjectiveOpinion,
+        with all beliefs and disbeliefs reduced per reason,emitter pair. '
+      example:
+        baseRateProbability: 0.001
+        opinionEmitterId: ocr
+        uncertainty: 0.1
+        belief: 0.75
+        opinionReasonId: unreadable
+        disbelief: 0.2
+      properties:
+        opinionEmitterId:
+          description: Functional source, if any, for this opinion, such a specific
+            condition or internal state encoutered. May be empty.
+          example: ocr
+          type: string
+        opinionReasonId:
+          description: Reason evoked, invoked or inferred by source for this opinion.
+            May be empty.
+          example: unreadable
+          type: string
+        belief:
+          description: attributed to belief that the opinion is TRUE. belief mass
+            (bx) normalized.
+          example: 0.75
+          format: double
+          type: number
+        disbelief:
+          description: attributed to belief that the opinion is FALSE. disbelief mass
+            (dx)  normalized
+          example: 0.2
+          format: double
+          type: number
+        uncertainty:
+          description: unattributed to either belief or disbelief and thus represent
+            uncertainty. uncertainty mass (ux) normalized.
+          example: 0.1
+          format: double
+          type: number
+        baseRateProbability:
+          description: The probability of the opinion being true in the absence of
+            the information generating it.
+          example: 0.001
+          format: double
+          type: number
+      type: object
+    InternalSubjectiveOpinion:
+      description: Three independent counters corresponding to belief, disbelief and
+        uncertainty. mediated by a common denominator and multiplied by a base rate
+        (probability in the absence of this information).
+      example:
+        baseRateNumerator: 1
+        commonDenominator: 1
+        unattributedUncertaintyNumerator: 1
+        opinionEmitterId: ocr
+        attributedBeliefNumerator: 5
+        opinionReasonId: unreadable
+        attributedDisbeliefNumerator: 2
+      properties:
+        opinionEmitterId:
+          description: 'Functional source, if any, for this opinion, such a specific
+            condition '
+          example: ocr
+          type: string
+        opinionReasonId:
+          description: Reason evoked, invoked or inferred by source for this opinion.
+          example: unreadable
+          type: string
+        attributedBeliefNumerator:
+          description: Number, signed and additive, of fulfillment points out of total
+            that are attributed to belief that the opinion is TRUE. belief mass (bx)
+            numerator accumulator.
+          example: 5
+          format: int32
+          type: integer
+        attributedDisbeliefNumerator:
+          description: Number, signed and additive, of fulfillment points out of total
+            that are attributed to belief that the opinion is FALSE. belief mass (dx)
+            numerator accumulator
+          example: 2
+          format: int32
+          type: integer
+        unattributedUncertaintyNumerator:
+          description: Number, signed and additive, of fulfillment points out of total
+            that are unattributed to either belief or disbelief and thus represent
+            uncertainty. uncertainty mass (ux) numerator accumulator.
+          example: 1
+          format: int32
+          type: integer
+        commonDenominator:
+          description: The normalizing factor (the common denominator) of uncertainty,
+            belief and disbelief.
+          example: 1
+          format: int32
+          type: integer
+        baseRateNumerator:
+          description: The probability of the opinion being true in the absence of
+            the information generating it; this represents the default probability
+            of a an element or character or letter appearing in a specific context
+          example: 1
+          format: int32
+          type: integer
+      type: object
+    AssignUsersRequest:
+      description: assign users dto
+      example:
+        challengeId: challengeId
+        avatarIds:
+        - avatarIds
+        - avatarIds
+      properties:
+        challengeId:
+          description: Unique ID of challenge
+          type: string
+        avatarIds:
+          items:
+            type: string
+          type: array
+      type: object
+    ArchivedShard:
+      example:
+        challengeId: 1CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        lastUpdateTimestamp: 2000-01-23T04:56:07.000+00:00
+        archiveName: challenge
+        archiveCompletionPercentage: 70
+        creationTimestamp: 2000-01-23T04:56:07.000+00:00
+        shard: 0
+        currentCompletionPercentage: 70
+      properties:
+        challengeId:
+          description: 'Alpha-numeric, unique id of challenge. '
+          example: 1CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        shard:
+          description: TBD
+          format: int32
+          type: integer
+        archiveName:
+          description: name of the archived shard
+          example: challenge
+          type: string
+        creationTimestamp:
+          description: Date and time expressed according to ISO 8601 (e.g. 2018-06-24T23:10:28+03:00)
+          format: date-time
+          type: string
+        lastUpdateTimestamp:
+          description: Date and time expressed according to ISO 8601 (e.g. 2018-06-24T23:10:28+03:00)
+          format: date-time
+          type: string
+        archiveCompletionPercentage:
+          description: completion percentage of a challenge
+          example: 70
+          format: double
+          type: number
+        currentCompletionPercentage:
+          description: completion percentage of a challenge
+          example: 70
+          format: double
+          type: number
+      type: object
+    Edge:
+      example:
+        destinationTagID: 7300124455B07E91CB289F87791D78064ECC93754F19B13D419489F1
+        destinationTextBoxId: "1"
+        elasticity: 5.962133916683182
+        edgeType: has-greater-area
+        slack: 0.0
+        sourceTagId: 87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+        sourceTextBoxId: "1"
+        internalSubjectiveOpinion:
+          baseRateNumerator: 1
+          commonDenominator: 1
+          unattributedUncertaintyNumerator: 1
+          opinionEmitterId: ocr
+          attributedBeliefNumerator: 5
+          opinionReasonId: unreadable
+          attributedDisbeliefNumerator: 2
+      properties:
+        sourceTagId:
+          description: Need to find solution for unifying tag id's across taggers-collaborators.Alpha-numeric,
+            unique id of tagged object
+          example: 87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        destinationTagID:
+          description: Need to find solution for unifying tag id's across taggers-collaborators.
+            Alpha-numeric, unique id of tagged object
+          example: 7300124455B07E91CB289F87791D78064ECC93754F19B13D419489F1
+          type: string
+        sourceTextBoxId:
+          description: textBox id from inside sourceTag
+          example: "1"
+          type: string
+        destinationTextBoxId:
+          description: textBox id from inside destinationTag
+          example: "1"
+          type: string
+        edgeType:
+          description: The type of the relationship between the two objects. Can be
+            extended to discrete histogram of types. All types must belong to taxonomy
+            or the challenge must allow for open-taxonomy.
+          example: has-greater-area
+          type: string
+        slack:
+          description: How much the edge can allow for the nodes to move without changing
+            its length?
+          example: 0.0
+          format: double
+          type: number
+        elasticity:
+          description: How much the edge can extended or contracted?
+          format: double
+          type: number
+        internalSubjectiveOpinion:
+          $ref: '#/components/schemas/InternalSubjectiveOpinion'
+      type: object
+    GetTaskResponse:
+      description: response from get task
+      example:
+        taggedMediaItem:
+          image:
+            imageBase64: imageBase64
+            imageURL: imageURL
+            imageContentType: imageContentType
+          mediaItemId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          challengeId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          taggedMediaItemId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          composingTasks:
+          - composingTasks
+          - composingTasks
+          mergedTags:
+          - evaluation:
+              confidence: 1.4658129805029452
+              subjectiveOpinion:
+                baseRateProbability: 0.001
+                opinionEmitterId: ocr
+                uncertainty: 0.1
+                belief: 0.75
+                opinionReasonId: unreadable
+                disbelief: 0.2
+            mediaItemId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            challengeId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            composingTags:
+            - composingTags
+            - composingTags
+            mergedTagId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            geometry:
+            - shapeType: Shape2DReactangle
+              shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            - shapeType: Shape2DReactangle
+              shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            permanentIdentifier:
+              hashCode: hashCode
+              segments:
+              - index: 0
+                weight: 6.027456183070403
+                assignmentFunction: hashed-from-data
+                encoding: json-array
+                value: value
+              - index: 0
+                weight: 6.027456183070403
+                assignmentFunction: hashed-from-data
+                encoding: json-array
+                value: value
+            nodeType: vehicle
+            evaluationStatus: passed
+          - evaluation:
+              confidence: 1.4658129805029452
+              subjectiveOpinion:
+                baseRateProbability: 0.001
+                opinionEmitterId: ocr
+                uncertainty: 0.1
+                belief: 0.75
+                opinionReasonId: unreadable
+                disbelief: 0.2
+            mediaItemId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            challengeId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            composingTags:
+            - composingTags
+            - composingTags
+            mergedTagId: 7E43358680768EF053898993DD196397EDFDDFBC81751818B7FD1300124455B07E91CB289F87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            geometry:
+            - shapeType: Shape2DReactangle
+              shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            - shapeType: Shape2DReactangle
+              shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            permanentIdentifier:
+              hashCode: hashCode
+              segments:
+              - index: 0
+                weight: 6.027456183070403
+                assignmentFunction: hashed-from-data
+                encoding: json-array
+                value: value
+              - index: 0
+                weight: 6.027456183070403
+                assignmentFunction: hashed-from-data
+                encoding: json-array
+                value: value
+            nodeType: vehicle
+            evaluationStatus: passed
+          mergedEdges:
+          - destinationTagID: 7300124455B07E91CB289F87791D78064ECC93754F19B13D419489F1
+            destinationTextBoxId: "1"
+            elasticity: 5.962133916683182
+            edgeType: has-greater-area
+            slack: 0.0
+            sourceTagId: 87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            sourceTextBoxId: "1"
+            internalSubjectiveOpinion:
+              baseRateNumerator: 1
+              commonDenominator: 1
+              unattributedUncertaintyNumerator: 1
+              opinionEmitterId: ocr
+              attributedBeliefNumerator: 5
+              opinionReasonId: unreadable
+              attributedDisbeliefNumerator: 2
+          - destinationTagID: 7300124455B07E91CB289F87791D78064ECC93754F19B13D419489F1
+            destinationTextBoxId: "1"
+            elasticity: 5.962133916683182
+            edgeType: has-greater-area
+            slack: 0.0
+            sourceTagId: 87791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+            sourceTextBoxId: "1"
+            internalSubjectiveOpinion:
+              baseRateNumerator: 1
+              commonDenominator: 1
+              unattributedUncertaintyNumerator: 1
+              opinionEmitterId: ocr
+              attributedBeliefNumerator: 5
+              opinionReasonId: unreadable
+              attributedDisbeliefNumerator: 2
+        taskId: taskId
+      properties:
+        taskId:
+          description: Unique ID of task
+          type: string
+        taggedMediaItem:
+          $ref: '#/components/schemas/TaggedMediaItem'
+      type: object
+    Image:
+      example:
+        imageBase64: imageBase64
+        imageURL: imageURL
+        imageContentType: imageContentType
+      properties:
+        imageURL:
+          description: The URL where the image is stored.
+          type: string
+        imageBase64:
+          description: Base64 encoded string of the image.
+          type: string
+        imageContentType:
+          description: Image MIME-type, such as image/png or image/jpeg
+          type: string
+      type: object
+    ShapeTypeEnum:
+      enum:
+      - 2D_rectangle
+      - 2D_polygon
+      - 2D_rectangle_text_block
+      - 2D_polygon_text_block
+      - 2D_timebound_polygon
+      type: string
+    Shape:
+      discriminator:
+        mapping:
+          "2D_rectangle": '#/components/schemas/Shape2DRectangle'
+          "2D_polygon": '#/components/schemas/Shape2DPolygon'
+          "2D_timebound_polygon": '#/components/schemas/Shape2DTimeboundPolygon'
+          "2D_rectangle_text_block": '#/components/schemas/Shape2DRectangleTextBlock'
+          "2D_polygon_text_block": '#/components/schemas/Shape2DPolygonTextBlock'
+        propertyName: shapeType
+      example:
+        shapeType: Shape2DReactangle
+        shapeId: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+      properties:
+        shapeId:
+          description: '[TBD] Alpha-numeric, unique id of dataset'
+          example: 791D78064ECC93754F19B13D419489F162A150A22DD814CKAF0E
+          type: string
+        shapeType:
+          description: descriminator
+          example: Shape2DReactangle
+          type: string
+      required:
+      - shapeId
+      - shapeType
+      type: object
+    ObservableSymbol:
+      description: The object which described several possible values for a an observed
+        character.
+      properties:
+        superposedCharacter:
+          description: The segments (sub-keys) that compose the permanent identifier.
+          items:
+            $ref: '#/components/schemas/LatentSymbol'
+          type: array
+      type: object
+    LatentSymbol:
+      description: The object which described several possible values for a an observed
+        character.
+      properties:
+        value:
+          type: string
+        subjectiveOpinion:
+          $ref: '#/components/schemas/InternalSubjectiveOpinion'
+      type: object
+    PermanentIdentifierSegment:
+      description: The object contains the description of an identifier segment
+      example:
+        index: 0
+        weight: 6.027456183070403
+        assignmentFunction: hashed-from-data
+        encoding: json-array
+        value: value
+      properties:
+        encoding:
+          description: The encoding used for deserializing the value, before distance
+            and identity functions can be computed
+          enum:
+          - json-array
+          - base64-binary-float
+          - base64-binary-double
+          - base64-binary-int32
+          - base64-binary-int64
+          - text-ascii
+          - text-unicode
+          type: string
+        index:
+          description: The index of the segment, so as to guarantee strict ordering
+            of segment comparison
+          format: int32
+          type: integer
+        weight:
+          description: The weight of the distance in the total distance
+          format: double
+          type: number
+        assignmentFunction:
+          description: 'The hashcode obtained by running a SHA-512 on the binary values
+            of the segments, in their order. '
+          enum:
+          - hashed-from-data
+          - machine-random-uniform
+          - machine-timestamp
+          - machine-identifier
+          - remote-timestamp
+          - remote-generated
+          - entity-identifier-ledger
+          - enforced-unique-ledger
+          - sequential-enforced-volatile-ledger
+          - sequential-enforced-persistent-ledger
+          type: string
+        value:
+          description: The serialized value of the segment
+          type: string
+      type: object
+    Challenge_datasetMetadata:
+      example:
+        mediaItems: 1000
+        numberOfShards: 4
+        name: Dogs
+      properties:
+        name:
+          description: '[TBD] Alpha-numeric, name of dataset'
+          example: Dogs
+          type: string
+        mediaItems:
+          description: estimated Tags Per Media Item
+          example: 1000
+          type: integer
+        numberOfShards:
+          description: shards in dataset
+          example: 4
+          type: integer
+    ChallengeStatistics_usersWorkTime:
+      example:
+        data:
+        - - 0
+          - 0
+        - - 0
+          - 0
+        name: name
+      properties:
+        name:
+          description: ' avatar id'
+          type: string
+        data:
+          items:
+            items:
+              format: int64
+              type: integer
+            type: array
+          type: array
+    Shape2DRectangle_allOf:
+      properties:
+        top:
+          description: Top coordinate of the tag, relative to media raster
+          example: 145
+          format: int32
+          type: integer
+        left:
+          description: Left coordinate of the tag, relative to media raster
+          example: 182
+          format: int32
+          type: integer
+        right:
+          description: Right coordinate of the tag, relative to media raster
+          example: 295
+          format: int32
+          type: integer
+        bottom:
+          description: Bottom coordinate of the tag, relative to media raster
+          example: 244
+          format: int32
+          type: integer
+    Shape2DPolygon_allOf:
+      properties:
+        points:
+          items:
+            $ref: '#/components/schemas/Point2D'
+          type: array
+    Shape2DTimeboundPolygon_allOf:
+      properties:
+        startFrameCounter:
+          description: Frame where the described tag begins
+          format: int32
+          type: integer
+        endFrameCounter:
+          description: Frame where the described tag begins
+          format: int32
+          type: integer
+        points:
+          items:
+            $ref: '#/components/schemas/Point2D'
+          type: array
+    Shape2DRectangleTextBlock_allOf:
+      properties:
+        transliteration:
+          $ref: '#/components/schemas/Transliteration'
+        style:
+          $ref: '#/components/schemas/Style'

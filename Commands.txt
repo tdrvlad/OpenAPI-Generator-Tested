@@ -1,0 +1,3 @@
+> openapi-generator generate -i deppVISS_TAG/deep-viss-tag.json -g python -o Generated_Client_Python
+
+> openapi-generator generate -i deppVISS_TAG/deep-viss-tag.json -g python-flask -o Generated_Server_Python
